@@ -84,6 +84,7 @@
         <option value="zh">zh - Chinese</option>
         <option value="no">no - Norwegian Bokmål</option>
         <option value="nn">nn - Norwegian Nynorsk</option>
+        <option value="sl">sl - Slovene</option>
       </select>
       <?php } ?>
     </td>
