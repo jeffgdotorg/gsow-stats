@@ -85,6 +85,7 @@
         <option value="no">no - Norwegian Bokmål</option>
         <option value="nn">nn - Norwegian Nynorsk</option>
         <option value="sl">sl - Slovene</option>
+        <option value="af">af - Afrikaans</option>
       </select>
       <?php } ?>
     </td>
