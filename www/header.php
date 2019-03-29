@@ -48,6 +48,8 @@
 |
 <a href="admin.php">Admin</a>
 |
+<a href="users.php?groupname=editors">Users</a>
+|
 <a href="<?php echo($oauth2_redir_url . '?logout=' . urlencode($logout_url)); ?>">
 <?php
 if (isset($headers["OIDC_CLAIM_picture"])) { ?>
