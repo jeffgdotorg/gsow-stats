@@ -30,7 +30,7 @@
   } elseif (($action === "add") && (isset($group_name)) && (isset($principal_name)) && (preg_match('/\\S+@\\S+\\.\\S+/', $principal_name))) {
     $insert = $usersDb->prepare("INSERT OR IGNORE INTO group_principal (group_name, principal_name) VALUES(:groupname, LOWER(:principalname))");
     $insert->bindValue(':groupname', $group_name, SQLITE3_TEXT);
-    $insert->bindValue(':principalname', $principal_name, SQLITE3_TEXT);
+    $insert->bindValue(':principalname', trim($principal_name), SQLITE3_TEXT);
     $results = $insert->execute();
   }
 
@@ -52,7 +52,7 @@
   while ($row = $results->fetchArray()) {
     $principal_name = $row["principal_name"];
 ?>
-    <tr<?php if ($evenOdd % 2) {?> bgcolor="#c0c0c0" <?php } ?> >
+    <tr<?php if ($evenOdd % 2) {?> bgcolor="#e0e0e0" <?php } ?> >
     <td><strong><?php print $principal_name ?></strong></td>
     <td><form><input type="hidden" name="action" value="delete"/><input type="hidden" name="groupname" value="<?php print $group_name ?>"/><input type="hidden" name="principalname" value="<?php print $principal_name ?>"/><button title="Remove this user">&times;</button></form></td>
     </tr>
