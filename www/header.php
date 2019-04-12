@@ -35,6 +35,9 @@
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
+<link href="/assets/magicsuggest-master/magicsuggest-min.css" rel="stylesheet">
+<script src="/assets/magicsuggest-master/magicsuggest.js"></script>
+
 </head>
 <body
  <?php if (preg_match('/_dev$/', $dbname)) { ?>
