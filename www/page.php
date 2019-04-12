@@ -11,9 +11,9 @@
         foreach ($_POST['tags_language'] as $value) {
           $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
           $result = mysqli_query($conn, $q);
-          $q = "SELECT tag FROM tag_group WHERE tag_group = 'Language' AND tag = '" . trim($value) . "';";
+          $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
           $result = mysqli_query($conn, $q);
-          if (sizeof(mysqli_fetch_array($result)) == 0) {
+          if (count(mysqli_fetch_array($result)) == 0) {
             $q = "INSERT INTO tag_group (tag_group, tag) VALUES('Language', '" . trim($value) . "');";
             $result = mysqli_query($conn, $q);
           }
@@ -25,7 +25,7 @@
           $result = mysqli_query($conn, $q);
           $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
           $result = mysqli_query($conn, $q);
-          if (sizeof(mysqli_fetch_array($result)) == 0) {
+          if (count(mysqli_fetch_array($result)) == 0) {
             $q = "INSERT INTO tag_group (tag_group, tag) VALUES('Editors', '" . trim($value) . "');";
             $result = mysqli_query($conn, $q);
           }
@@ -37,7 +37,7 @@
           $result = mysqli_query($conn, $q);
           $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
           $result = mysqli_query($conn, $q);
-          if (sizeof(mysqli_fetch_array($result)) == 0) {
+          if (count(mysqli_fetch_array($result)) == 0) {
             $q = "INSERT INTO tag_group (tag_group, tag) VALUES('GSOW', '" . trim($value) . "');";
             $result = mysqli_query($conn, $q);
           }
@@ -49,7 +49,7 @@
           $result = mysqli_query($conn, $q);
           $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
           $result = mysqli_query($conn, $q);
-          if (sizeof(mysqli_fetch_array($result)) == 0) {
+          if (count(mysqli_fetch_array($result)) == 0) {
             $q = "INSERT INTO tag_group (tag_group, tag) VALUES('Region', '" . trim($value) . "');";
             $result = mysqli_query($conn, $q);
           }
@@ -61,7 +61,7 @@
           $result = mysqli_query($conn, $q);
           $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
           $result = mysqli_query($conn, $q);
-          if (sizeof(mysqli_fetch_array($result)) == 0) {
+          if (count(mysqli_fetch_array($result)) == 0) {
             $q = "INSERT INTO tag_group (tag_group, tag) VALUES('', '" . trim($value) . "');";
             $result = mysqli_query($conn, $q);
           }
