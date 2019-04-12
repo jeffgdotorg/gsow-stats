@@ -7,10 +7,64 @@
   $conn->set_charset("utf8");
   if (isset($_POST['act'])) {
     if ($_POST['act'] == 'add') {
-      if (isset($_POST['tags'])) {
-        foreach ($_POST['tags'] as $value) {
+      if (isset($_POST['tags_language'])) {
+        foreach ($_POST['tags_language'] as $value) {
           $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
           $result = mysqli_query($conn, $q);
+          $q = "SELECT tag FROM tag_group WHERE tag_group = 'Language' AND tag = '" . trim($value) . "';";
+          $result = mysqli_query($conn, $q);
+          if (sizeof(mysqli_fetch_array($result)) == 0) {
+            $q = "INSERT INTO tag_group (tag_group, tag) VALUES('Language', '" . trim($value) . "');";
+            $result = mysqli_query($conn, $q);
+          }
+        }
+      }
+      if (isset($_POST['tags_editor'])) {
+        foreach ($_POST['tags_editor'] as $value) {
+          $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
+          $result = mysqli_query($conn, $q);
+          $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
+          $result = mysqli_query($conn, $q);
+          if (sizeof(mysqli_fetch_array($result)) == 0) {
+            $q = "INSERT INTO tag_group (tag_group, tag) VALUES('Editors', '" . trim($value) . "');";
+            $result = mysqli_query($conn, $q);
+          }
+        }
+      }
+      if (isset($_POST['tags_gsow'])) {
+        foreach ($_POST['tags_gsow'] as $value) {
+          $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
+          $result = mysqli_query($conn, $q);
+          $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
+          $result = mysqli_query($conn, $q);
+          if (sizeof(mysqli_fetch_array($result)) == 0) {
+            $q = "INSERT INTO tag_group (tag_group, tag) VALUES('GSOW', '" . trim($value) . "');";
+            $result = mysqli_query($conn, $q);
+          }
+        }
+      }
+      if (isset($_POST['tags_region'])) {
+        foreach ($_POST['tags_region'] as $value) {
+          $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
+          $result = mysqli_query($conn, $q);
+          $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
+          $result = mysqli_query($conn, $q);
+          if (sizeof(mysqli_fetch_array($result)) == 0) {
+            $q = "INSERT INTO tag_group (tag_group, tag) VALUES('Region', '" . trim($value) . "');";
+            $result = mysqli_query($conn, $q);
+          }
+        }
+      }
+      if (isset($_POST['tags_misc'])) {
+        foreach ($_POST['tags_misc'] as $value) {
+          $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
+          $result = mysqli_query($conn, $q);
+          $q = "SELECT tag FROM tag_group WHERE tag = '" . trim($value) . "';";
+          $result = mysqli_query($conn, $q);
+          if (sizeof(mysqli_fetch_array($result)) == 0) {
+            $q = "INSERT INTO tag_group (tag_group, tag) VALUES('', '" . trim($value) . "');";
+            $result = mysqli_query($conn, $q);
+          }
         }
       }
     }
@@ -160,10 +214,30 @@ d3.tsv("page-data.php?pageid=<?php echo($pageid); ?>", function(error, data) {
 
 <script>
   $(function() {
-    $('#magicsuggest').magicSuggest({
-        "data": "get_all_tags.php",
-        "name": "tags[]",
-        "placeholder": "Type or select one or more tags, then click Add"
+    $('#tags_language').magicSuggest({
+        "data": "get_tags_by_group.php?taggroup=Language",
+        "name": "tags_language[]",
+        "placeholder": "Language"
+    });
+    $('#tags_editor').magicSuggest({
+        "data": "get_tags_by_group.php?taggroup=Editors",
+        "name": "tags_editor[]",
+        "placeholder": "Editor"
+    });
+    $('#tags_gsow').magicSuggest({
+        "data": "get_tags_by_group.php?taggroup=GSOW",
+        "name": "tags_gsow[]",
+        "placeholder": "GSOW tags"
+    });
+    $('#tags_region').magicSuggest({
+        "data": "get_tags_by_group.php?taggroup=Region",
+        "name": "tags_region[]",
+        "placeholder": "Region tags"
+    });
+    $('#tags_misc').magicSuggest({
+        "data": "get_tags_by_group.php?taggroup=",
+        "name": "tags_misc[]",
+        "placeholder": "Misc tags"
     });
   });
 </script>
@@ -175,7 +249,11 @@ d3.tsv("page-data.php?pageid=<?php echo($pageid); ?>", function(error, data) {
   Add tags:
   <input type='hidden' name='pageid' value='<?php echo($pageid); ?>' />
   <input type='hidden' name='act' value='add' />
-  <div id="magicsuggest" style="width: 32em"></div>
+  <div id="tags_language" style="width: 16em"></div>
+  <div id="tags_editor" style="width: 16em"></div>
+  <div id="tags_gsow" style="width: 16em"></div>
+  <div id="tags_region" style="width: 16em"></div>
+  <div id="tags_misc" style="width: 16em"></div>
   <input type='submit' value='Add' />
 </form>
 </center>
