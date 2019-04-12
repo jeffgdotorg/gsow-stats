@@ -48,12 +48,25 @@
     $lang = "";
   }
 ?>
+
+<script>
+  $(function() {
+    $("#datepicker").datepicker({
+      "dateFormat": "yy-mm-dd",
+      "changeMonth": true,
+      "changeYear": true,
+      "showOtherMonths": true,
+      "selectOtherMonths": true
+    });
+  });
+</script>
+
 <form action='admin.php' method=POST>
 <h1><?php echo($act); ?> a page</h1>
 <table>
   <tr>
     <td>Page name:</td>
-    <td><input name='page' value="<?php echo($page); ?>" /></td>
+    <td><input name='page' autocomplete="off" value="<?php echo($page); ?>" /></td>
   </tr>
   <tr>
     <td>Language:</td>
@@ -92,7 +105,7 @@
   </tr>
   <tr>
     <td>First major edit date:</td>
-    <td><input name='dt' value="<?php echo($dt); ?>" /></td>
+    <td><input name="dt" id='datepicker' autocomplete="off" placeholder="YYYY-MM-DD" value="<?php if ($dt != 'YYYY-MM-DD') { echo $dt; } ?>"</input></td>
   </tr>
   <tr>
     <td colspan=2 align=right><input style='width:100%' type='submit' value='<?php echo($act); ?>' /></td>
