@@ -7,9 +7,11 @@
   $conn->set_charset("utf8");
   if (isset($_POST['act'])) {
     if ($_POST['act'] == 'add') {
-      if (trim($_POST['tag']) != "") {
-        $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($_POST['tag']) . "', " . $_POST['pageid'] . ");";
-        $result = mysqli_query($conn, $q);
+      if (isset($_POST['tags'])) {
+        foreach ($_POST['tags'] as $value) {
+          $q = "INSERT INTO tags (tag, pageid) VALUES ('" . trim($value) . "', " . $_POST['pageid'] . ");";
+          $result = mysqli_query($conn, $q);
+        }
       }
     }
     else {
@@ -156,18 +158,29 @@ d3.tsv("page-data.php?pageid=<?php echo($pageid); ?>", function(error, data) {
 
 </script>
 
+<script>
+  $(function() {
+    $('#magicsuggest').magicSuggest({
+        "data": "get_all_tags.php",
+        "name": "tags[]",
+        "placeholder": "Type or select one or more tags, then click Add"
+    });
+  });
+</script>
+
 <hr/>
 
 <center>
 <form action='page.php' method='POST'>
-  Add tag:
+  Add tags:
   <input type='hidden' name='pageid' value='<?php echo($pageid); ?>' />
   <input type='hidden' name='act' value='add' />
-  <input name='tag' />
+  <div id="magicsuggest" style="width: 32em"></div>
   <input type='submit' value='Add' />
 </form>
 </center>
 <br/>
+
 
 <table id="myTable" class="tablesorter">
   <thead>
