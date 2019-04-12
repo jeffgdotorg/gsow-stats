@@ -4,7 +4,7 @@
   include("../config.php");
   $conn = mysqli_connect($host, $user, $password, $dbname, $port);
   $conn->set_charset("utf8");
-  $query = "SELECT DISTINCT tag FROM tags";
+  $query = "SELECT DISTINCT tag FROM tags ORDER BY tag ASC";
   $result = mysqli_query($conn, $query);
   $tags = array();
   while ($r = mysqli_fetch_array($result)) {
