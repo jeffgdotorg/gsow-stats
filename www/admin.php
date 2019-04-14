@@ -9,31 +9,34 @@
   if (isset($_GET['page'])) {
     $page = $_GET['page'];
     $dt = substr($_GET['dt'], 0, 10);
-    $lang = $_GET['lang'];
+    $lang = $_GET['lang'][0];
     $act = "Update";
   }
   if (isset($_POST['page'])) {
     $page = $_POST['page'];
-    $lang = $_POST['lang'];
-    if (!isset($_POST['dt'])) {
-      echo("<h2>Sorry, you need to enter a start date</h2>");
+    $lang = $_POST['lang'][0];
+    if ($lang == "") {
+      echo("<h2><i class='fas fa-exclamation-triangle'></i>Please choose a valid language</h2>");
+    }
+    elseif (trim($_POST['page']) == "") {
+      echo("<h2><i class='fas fa-exclamation-triangle'></i>Sorry, you need to enter a page name</h2>");
     }
     else {
-      if ($_POST['dt']=="YYYY-MM-DD") {
-        echo("<h2>Please enter a valid date</h2>");
+      if ((! isset($_POST['dt'])) || ($_POST['dt'] == "") || ($_POST['dt']=="YYYY-MM-DD")) {
+        echo("<h2><i class='fas fa-exclamation-triangle'></i>Please enter a valid date</h2>");
       }
       else {
         $dt = $_POST['dt'];
-        $lang = $_POST['lang'];
+        $lang = $_POST['lang'][0];
         $page = str_replace("'", "\'", $page);
-        $query = "UPDATE edits SET start='$dt' WHERE page='$page' and lang='$lang'";
+        $query = "UPDATE edits SET start='$dt' WHERE page='" . trim($page) . "' and lang='$lang'";
         $result = mysqli_query($conn, $query);
         $rows = mysqli_affected_rows($conn);
         if ($rows == 1) {
           echo("<h2>Page updated</h2>");
         }
         else {
-          $query = "INSERT INTO edits (page, lang, start) VALUES ('$page', '$lang', '$dt');";
+          $query = "INSERT INTO edits (page, lang, start) VALUES ('" . trim($page) . "', '$lang', '$dt');";
           $result = mysqli_query($conn, $query);
           $rows = mysqli_affected_rows($conn);
           if ($rows != 1) {
@@ -60,6 +63,20 @@
     });
   });
 </script>
+<script>
+  $(function() {
+    $('#langpicker').magicSuggest({
+        "allowFreeEntries": false,
+        "data": "/assets/iso-639-1_codes.json",
+        "maxSelection": 1,
+        "name": "lang",
+        "placeholder": "<?php if ($lang != "") { echo($lang); } else { echo "Language"; } ?>",
+        "resultAsString": true,
+        "value": ["<?php if ($lang != "") { echo($lang); } else { echo "en"; } ?>"],
+        "disabled": <?php echo($lang != "" ? "true" : "false"); ?>,
+    });
+  });
+</script>
 
 <form action='admin.php' method=POST>
 <h1><?php echo($act); ?> a page</h1>
@@ -71,36 +88,8 @@
   <tr>
     <td>Language:</td>
     <td>
-      <?php
-        if ($lang != "") {
-          echo($lang);
-          echo("<input type='hidden' name='lang' value='$lang' />");
-        } else {
-      ?>
-      <select name="lang">
-        <option value="en">en - English</option>
-        <option value="fr">fr - French</option>
-        <option value="es">es - Spanish</option>
-        <option value="de">de - German</option>
-        <option value="it">it - Italian</option>
-        <option value="pt">pt - Portugues</option>
-        <option value="pl">pl - Polish</option>
-        <option value="nl">nl - Dutch</option>
-        <option value="hu">hu - Hungarian</option>
-        <option value="ru">ru - Russian</option>
-        <option value="fi">fi - Finnish</option>
-        <option value="bg">bg - Bulgarian</option>
-        <option value="sv">sv - Swedish</option>
-        <option value="ar">ar - Arabic</option>
-        <option value="cs">cs - Czech</option>
-        <option value="ro">ro - Romanian</option>
-        <option value="zh">zh - Chinese</option>
-        <option value="no">no - Norwegian Bokmål</option>
-        <option value="nn">nn - Norwegian Nynorsk</option>
-        <option value="sl">sl - Slovene</option>
-        <option value="af">af - Afrikaans</option>
-      </select>
-      <?php } ?>
+      <div id="langpicker" style="width: 16em;"></div>
+      <?php if ($lang != "") {?><input type="hidden" name="lang[]" value="<?php echo $lang ?>"/><?php } ?>
     </td>
   </tr>
   <tr>

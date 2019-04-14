@@ -179,7 +179,7 @@ Frozen Header
       </form>
       <form action='admin.php' style='display: inline'>
         <input type='hidden' name='tag' value='<?php echo($otag); ?>' />
-        <input type='hidden' name='lang' value='<?php echo($row['lang']); ?>' />
+        <input type='hidden' name='lang[]' value='<?php echo($row['lang']); ?>' />
         <input type='hidden' name='pageid' value='<?php echo($row["pageid"]); ?>' />
         <input type='hidden' name='page' value='<?php echo($row["page"]); ?>' />
         <input type='hidden' name='dt' value='<?php echo($row["start"]); ?>' />
