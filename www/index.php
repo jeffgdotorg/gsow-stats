@@ -140,6 +140,8 @@ Frozen Header
   </center>
 
   <hr/>
+  <center><div>Tracking stats for a total of <b><?php echo count($rows); ?></b> pages</div></center>
+  <hr/>
 
   <table id="myTable" class="tablesorter">
     <thead>
