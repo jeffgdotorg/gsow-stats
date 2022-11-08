@@ -41,14 +41,14 @@
   $q = "SELECT edit.pageid AS pageid, edit.page AS title FROM (SELECT pageid, COUNT(*) AS tally FROM tags WHERE lower(tag) LIKE 'language %') AS pagetags WHERE pagetags.tally <> 1";
   $result = mysqli_query($conn, $q);
   while ($row = mysqli_fetch_assoc($result)) {
-    array_push($anomaly_language_count, printf("<a href=\"admin.php?page=%d\">%s</a>", $row["pageid"], $row["title"]));
+    array_push($anomaly_language_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
   }
 
   $anomaly_editor_count = array();
   $q = "SELECT edits.pageid AS pageid, edits.page AS title FROM (SELECT pageid, count(*) AS tally FROM tags WHERE lower(tag) LIKE 'editor %' GROUP BY pageid) AS pagetags JOIN edits ON pagetags.pageid = edits.pageid WHERE tally != 1;";
   $result = mysqli_query($conn, $q);
   while ($row = mysqli_fetch_assoc($result)) {
-    array_push($anomaly_editor_count, printf("<a href=\"admin.php?page=%d\">%s</a>", $row["pageid"], $row["title"]));
+    array_push($anomaly_editor_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
   }
 
 ?>
