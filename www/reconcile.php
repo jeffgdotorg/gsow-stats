@@ -51,6 +51,13 @@
     array_push($anomaly_editor_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
   }
 
+  $anomaly_new_rewrite_count = array();
+  $q = "SELECT edits.pageid AS pageid, edits.page AS title FROM (SELECT pageid, count(*) AS tally FROM tags WHERE lower(tag) IN ('page new', 'page rewrite') GROUP BY pageid) AS pagetags JOIN edits ON pagetags.pageid = edits.pageid WHERE tally != 1;";
+  $result = mysqli_query($conn, $q);
+  while ($row = mysqli_fetch_assoc($result)) {
+    array_push($anomaly_new_rewrite_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
+  }
+
 ?>
   <h1>Reconciliation Queries</h1>
   <h2>Page counts</h2>
@@ -111,6 +118,20 @@
         ?>
       </td>
       <td>Each linked page has either no <i>Editor</i> tags, or has multiple <i>Editor</i> tags.</td>
+    </tr>
+    <tr>
+      <td>Pages not having exactly one of <i>Page New</i> or <i>Page Rewrite</i> tag</td>
+      <td>
+        <?php
+        if (count($anomaly_new_rewrite_count) == 0) {
+          echo "--";
+        }
+        foreach ($anomaly_new_rewrite_count as $link) {
+          echo "<li>$link</li>";
+        }
+        ?>
+      </td>
+      <td>Each linked page either lacks a <i>Page New</i> / <i>Page Rewrite</i> tag, or has multiple such tags.</td>
     </tr>
 
   </tbody>
