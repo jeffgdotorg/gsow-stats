@@ -1,3 +1,6 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 <?php
   ini_set('display_errors',1);
   ini_set('display_startup_errors',1);
@@ -40,28 +43,43 @@
   $anomaly_language_count = array();
   $q = "SELECT edit.pageid AS pageid, edit.page AS title FROM (SELECT pageid, COUNT(*) AS tally FROM tags WHERE lower(tag) LIKE 'language %') AS pagetags WHERE pagetags.tally <> 1";
   $result = mysqli_query($conn, $q);
-  while ($row = mysqli_fetch_assoc($result)) {
+  while ($result && $row = mysqli_fetch_assoc($result)) {
     array_push($anomaly_language_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
   }
 
   $anomaly_editor_count = array();
   $q = "SELECT edits.pageid AS pageid, edits.page AS title FROM (SELECT pageid, count(*) AS tally FROM tags WHERE lower(tag) LIKE 'editor %' GROUP BY pageid) AS pagetags JOIN edits ON pagetags.pageid = edits.pageid WHERE tally != 1;";
   $result = mysqli_query($conn, $q);
-  while ($row = mysqli_fetch_assoc($result)) {
+  while ($result && $row = mysqli_fetch_assoc($result)) {
     array_push($anomaly_editor_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
   }
 
   $anomaly_new_rewrite_count = array();
   $q = "SELECT edits.pageid AS pageid, edits.page AS title FROM (SELECT pageid, count(*) AS tally FROM tags WHERE lower(tag) IN ('page new', 'page rewrite') GROUP BY pageid) AS pagetags JOIN edits ON pagetags.pageid = edits.pageid WHERE tally != 1;";
   $result = mysqli_query($conn, $q);
-  while ($row = mysqli_fetch_assoc($result)) {
+  while ($result && $row = mysqli_fetch_assoc($result)) {
     array_push($anomaly_new_rewrite_count, "<a href=\"admin.php?pageid=" . $row["pageid"] . "\">" . $row["title"] . "</a>");
   }
+
+  ##########################
+  # LANGUAGE BREAKDOWN QUERY
+  ##########################
+  $language_tag_labels = array();
+  $language_tag_data = array();
+  $language_tag_bg_colors = array();
+  $q = "SELECT REGEXP_REPLACE(tag, 'Language', '') AS tag, count(*) AS tally FROM tags WHERE lower(tag) LIKE 'language %' GROUP BY tag ORDER BY tally DESC";
+  $result = mysqli_query($conn, $q);
+  while ($row = mysqli_fetch_assoc($result)) {
+    array_push($language_tag_labels, $row["tag"]);
+    array_push($language_tag_data, $row["tally"]);
+    array_push($language_tag_bg_colors, "rgba(" . rand(64,192) . "," . rand(32, 224) . "," . rand(16, 240) . "," . rand(0, 128) . ")");
+  }
+  $language_data = array("labels" => $language_tag_labels, "datasets" => array(array("label" => "Page Language", "data" => $language_tag_data, "minBarLength" => 3, "backgroundColor" => $language_tag_bg_colors)));
 
 ?>
   <h1>Reconciliation Queries</h1>
   <h2>Page counts</h2>
-  <table>
+  <table class="tablesorter">
   <tbody>
     <tr><th>Query</th><th>Value</th><th>Remarks</th></tr>
     <tr>
@@ -88,7 +106,7 @@
   </table>
 
   <h2>Anomalous pages</h2>
-  <table>
+  <table class="tablesorter">
   <tbody>
     <tr><th>Query</th><th>Result pages</th><th>Remarks</th></tr>
     <tr>
@@ -103,7 +121,7 @@
         }
         ?>
       </td>
-      <td>Each linked page has either no <i>Language</i> tags, or has multiple <i>Language</i> tags.</td>
+      <td>Each linked page either has no <i>Language</i> tags, or has multiple <i>Language</i> tags.</td>
     </tr>
     <tr>
       <td>Pages not having exactly one <i>Editor</i> tag</td>
@@ -117,7 +135,7 @@
         }
         ?>
       </td>
-      <td>Each linked page has either no <i>Editor</i> tags, or has multiple <i>Editor</i> tags.</td>
+      <td>Each linked page either has no <i>Editor</i> tags, or has multiple <i>Editor</i> tags.</td>
     </tr>
     <tr>
       <td>Pages not having exactly one of <i>Page New</i> or <i>Page Rewrite</i> tag</td>
@@ -131,11 +149,29 @@
         }
         ?>
       </td>
-      <td>Each linked page either lacks a <i>Page New</i> / <i>Page Rewrite</i> tag, or has multiple such tags.</td>
+      <td>Each linked page either has no <i>Page New</i> / <i>Page Rewrite</i> tags, or has multiple such tags.</td>
     </tr>
-
   </tbody>
   </table>
+
+  <h2>Language distribution</h2>
+
+  <div><canvas id="langChart"></canvas></div>
+
+<script>
+  chartData = <?php echo json_encode($language_data); ?>;
+  chartData.backgroundColor = "rgb(255, 99, 132)";
+
+  const chartConfig = {
+    type: 'bar',
+    data: chartData,
+    options: { 
+      indexAxis: "y",
+    }
+  };
+
+  const langChart = new Chart(document.getElementById('langChart'), chartConfig);
+</script>
 
 <?php
   include("footer.php");
