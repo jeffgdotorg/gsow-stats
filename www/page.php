@@ -56,10 +56,11 @@
   while ($r = mysqli_fetch_array($result)) {
     $pvs = $r['total_views'];
   }
+  $title_for_wp_link = preg_replace("/\?/", "%3F", $title)
 ?>
 
 <h1><?php echo($title); ?></h1>
-<a target="_blank" href="https://<?php echo($lang); ?>.wikipedia.org/wiki/<?php echo($title); ?>">wiki page</a>
+<a target="_blank" href="https://<?php echo($lang); ?>.wikipedia.org/wiki/<?php echo($title_for_wp_link); ?>">wiki page</a>
 
 <table>
   <tr>
