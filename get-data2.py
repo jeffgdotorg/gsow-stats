@@ -40,9 +40,10 @@ for r in range(df.shape[0]):
   editid = row['edit_id']
   title = row['page']
   lang = row['lang']
+  headers = { 'User-Agent': 'User-Agent: StatBadger/0.0 (https://github.com/kylepolich/gsow-stats; abouttimeboard@gmail.com) python-requests/0.0' }
   url = 'https://' + lang + '.wikipedia.org/w/api.php?action=query&format=json&titles=' + urllib.parse.quote(title.encode("utf8"))
   print('Getting', url)
-  req = requests.get(url)
+  req = requests.get(url, headers=headers)
   j = json.loads(req.text)
   try:
     pages = j['query']['pages']
